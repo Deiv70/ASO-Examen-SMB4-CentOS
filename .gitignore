@@ -1,0 +1,10 @@
+_Entrega
+_Capturas
+*.sal
+*.his
+*.png
+*.vsdx
+*.odt
+*.pdf
+samba*
+SRV_COS_*_QUOTA.*

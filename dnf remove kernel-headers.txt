@@ -1,0 +1,36 @@
+[[ dnf remove kernel-headers ]] :
+
+Eliminando:
+ kernel-headers                                           x86_64                         4.18.0-348.7.1.el8_5                                             @baseos                            5.1 M
+Eliminando dependencias:
+ annobin                                                  x86_64                         9.72-1.el8_5.2                                                   @appstream                         135 k
+ clang-devel                                              x86_64                         12.0.1-4.module_el8.5.0+1025+93159d6c                            @appstream                          16 M
+ gcc                                                      x86_64                         8.5.0-4.el8_5                                                    @appstream                          59 M
+ gcc-c++                                                  x86_64                         8.5.0-4.el8_5                                                    @appstream                          31 M
+ gcc-gdb-plugin                                           x86_64                         8.5.0-4.el8_5                                                    @appstream                         334 k
+ glibc-devel                                              x86_64                         2.28-164.el8                                                     @baseos                            1.3 M
+ libtool                                                  x86_64                         2.4.6-25.el8                                                     @AppStream                         2.6 M
+ systemtap                                                x86_64                         4.5-3.el8                                                        @appstream                           0  
+Eliminando dependencias sin uso:
+ clang                                                    x86_64                         12.0.1-4.module_el8.5.0+1025+93159d6c                            @appstream                         180 k
+ clang-tools-extra                                        x86_64                         12.0.1-4.module_el8.5.0+1025+93159d6c                            @appstream                          53 M
+ cmake-filesystem                                         x86_64                         3.20.2-4.el8                                                     @appstream                           0  
+ cpp                                                      x86_64                         8.5.0-4.el8_5                                                    @appstream                          28 M
+ elfutils-debuginfod-client-devel                         x86_64                         0.185-1.el8                                                      @baseos                            8.9 k
+ elfutils-devel                                           x86_64                         0.185-1.el8                                                      @baseos                            171 k
+ glibc-headers                                            x86_64                         2.28-164.el8                                                     @baseos                            1.9 M
+ isl                                                      x86_64                         0.16.1-6.el8                                                     @AppStream                         3.1 M
+ libmpc                                                   x86_64                         1.1.0-9.1.el8                                                    @AppStream                         124 k
+ libstdc++-devel                                          x86_64                         8.5.0-4.el8_5                                                    @appstream                          11 M
+ libxcrypt-devel                                          x86_64                         4.1.1-6.el8                                                      @baseos                             24 k
+ libzstd-devel                                            x86_64                         1.4.4-1.el8                                                      @baseos                            149 k
+ mokutil                                                  x86_64                         1:0.3.0-11.el8                                                   @anaconda                           87 k
+ systemtap-client                                         x86_64                         4.5-3.el8                                                        @appstream                          11 M
+ systemtap-devel                                          x86_64                         4.5-3.el8                                                        @appstream                         8.8 M
+ xz-devel                                                 x86_64                         5.2.4-3.el8                                                      @baseos                            202 k
+
+Resumen de la transacción
+===================================================================================================================================================================================================
+Eliminar  25 Paquetes
+
+Espacio liberado: 233 M

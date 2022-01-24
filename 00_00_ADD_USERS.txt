@@ -1,0 +1,14 @@
+#-> UID:user:[Dept - ]Nombre Completo:G-Primario:G-Secundaio,G-Secundario2,...
+10000:noa04:Encargada - Noa:encargado:g_ventas,g_vental,g_voceania
+11000:fermin04:Encargado - Fermín:encargado:g_ventas,g_vental,g_ventae,g_vasia,g_veuropa,g_voceania
+12000:felipe04:Encargado - Felipe:encargado:g_ventae
+13000:manuel04:Encargado - Manuel:encargado:g_vasia
+14000:ana04:Empleada - Ana:empleado:g_vental
+14001:ariana04:Empleada - Ariana:empleado:desarrollo
+14002:beatriz04:Empleada - Beatriz:empleado:g_ventae
+14003:cesario04:Empleado - Cesario:empleado:desarrollo
+14004:diego04:Empleado - Diego:empleado:desarrollo
+14005:estebaniz04:Empleado - Estebaniz:empleado:desarrollo
+16000:geluco04:Empleado - Gelúco:empleado:g_vasia
+17000:honorato04:Empleado - Honorato:empleado:g_veuropa
+18000:isabel04:Empleada - Isabél:empleado:g_voceania
