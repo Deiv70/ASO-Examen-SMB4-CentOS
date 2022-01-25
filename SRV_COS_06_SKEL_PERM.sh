@@ -35,14 +35,6 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
         3 ) 
 
-mkdir -p /comun/VentasExtranjero
-mkdir -p /home/$Dominio/{users,profiles,scripts}
-mkdir /home/$Dominio/scripts
-
-setfacl -m g:"$Dominio\Domain Admins":rwx /home/$Dominio/profiles/
-setfacl -dm g:"$Dominio\Domain Admins":rwx /home/$Dominio/profiles/
-setfacl -m g:"$Dominio\Domain Users":rwx /home/$Dominio/profiles/
-
 #mkdir -p /comun/VentasExtranjero #&& mkdir /home/$Dominio
 
 #cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /comun
@@ -68,6 +60,15 @@ echo "/dev/sdb2					/comun			ext4		defaults,acl,user_xattr,errors=remount-ro,usr
 #quotacheck -fugm /home/$Dominio && quotacheck -fugm /comun
 #quotaon -v /home/$Dominio && quotaon -v /comun
 mount -a
+
+mkdir -p /comun/VentasExtranjero
+mkdir -p /home/$Dominio/{users,profiles,scripts}
+mkdir /home/$Dominio/scripts
+
+setfacl -m g:"$Dominio\Domain Admins":rwx /home/$Dominio/profiles/
+setfacl -dm g:"$Dominio\Domain Admins":rwx /home/$Dominio/profiles/
+setfacl -m g:"$Dominio\Domain Users":rwx /home/$Dominio/profiles/
+
 quotacheck -vaugfcm
 quotaon -vaug
 
