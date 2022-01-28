@@ -27,7 +27,7 @@ VBoxManage storagectl "$S1" --name "SATA" --add sata --controller IntelAHCI --po
 VBoxManage storageattach "$S1" --storagectl "VirtIO" --device 0 --port 0 --type hdd --medium "${DisksBaseFolderTarget}/${VBoxNameS1}.qcow"
 VBoxManage storageattach "$S1" --storagectl "SATA" --device 0 --port 0 --type hdd --medium "${DisksBaseFolderTarget}/${VBoxNameS1}-Datos.qcow"
 VBoxManage storageattach "$S1" --storagectl "SATA" --device 0 --port 1 --type dvddrive --medium "none"
-VBoxManage modifyvm "$S1" --nic1 natnetwork --nictype1 virtio --nat-network1 "${NAT}" --vram 16 --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm
+VBoxManage modifyvm "$S1" --nic1 natnetwork --nictype1 virtio --nat-network1 "${NAT}" --vram 16 --graphicscontroller vmsvga --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm --audio none
 VBoxManage sharedfolder remove "$S1" --name=_Shared
 VBoxManage sharedfolder add "$S1" --name=_Shared --hostpath="${SharedFolder}"
 
@@ -37,7 +37,7 @@ VBoxManage storagectl "$C1" --name "VirtIO" --add virtio --controller VirtIO
 VBoxManage storagectl "$C1" --name "SATA" --add sata --controller IntelAHCI --portcount 2
 VBoxManage storageattach "$C1" --storagectl "VirtIO" --device 0 --port 0 --type hdd --medium "${DisksBaseFolderTarget}/${VBoxNameC1}.qcow"
 VBoxManage storageattach "$C1" --storagectl "SATA" --device 0 --port 1 --type dvddrive --medium "none"
-VBoxManage modifyvm "$C1" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT" --vram 36 --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm
+VBoxManage modifyvm "$C1" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT" --vram 52 --graphicscontroller vmsvga --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm --audio none
 VBoxManage sharedfolder remove "$C1" --name=_Shared
 VBoxManage sharedfolder add "$C1" --name=_Shared --hostpath="${SharedFolder}"
 #VBoxManage setextradata "$C1" GUI/MenuBar/Enabled false
@@ -48,7 +48,7 @@ VBoxManage createvm --name "$C2" --register --ostype Windows10_64
 VBoxManage storagectl "$C2" --name "SATA" --add sata --controller IntelAHCI --portcount 2
 VBoxManage storageattach "$C2" --storagectl "SATA" --device 0 --port 0 --type hdd --medium "${DisksBaseFolderTarget}/${VBoxNameC2}.qcow"
 VBoxManage storageattach "$C2" --storagectl "SATA" --device 0 --port 1 --type dvddrive --medium "none"
-VBoxManage modifyvm "$C2" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT" --vram 36 --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm
+VBoxManage modifyvm "$C2" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT" --vram 52 --graphicscontroller vboxsvga --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm --audio none
 VBoxManage sharedfolder remove "$C2" --name=_Shared
 VBoxManage sharedfolder add "$C2" --name=_Shared --hostpath="${SharedFolder}"
 
