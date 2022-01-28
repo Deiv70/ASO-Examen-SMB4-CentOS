@@ -19,7 +19,7 @@ REM set VMsBaseFolder=G:\_VBox
 
 REM ## VBoxManage Variables:
 set NumPuesto=3
-set NumEXA=4
+set NumEXA=5
 
 set VarEXA=EXA21220%NumEXA%GOMGARDAV
 REM set VarEXA=EXA2021MARZO05GOMGARDAV
@@ -69,9 +69,9 @@ VBoxManage sharedfolder add "%C1%" --name=_Shared --hostpath="%SharedFolder%"
 
 REM VBoxManage import "%OVAsBaseFolder%\%VBoxNameC2%.ova" --vsys 0 --vmname "%C2%" --unit 14 --disk "%VMsBaseFolder%\%C2%\%VBoxNameC2%-disk001.vmdk" --settingsfile "%VMsBaseFolder%\%C2%\%C2%.vbox"
 VBoxManage createvm --name "%C2%" --register --ostype Windows10_64
-VBoxManage storagectl "%C1%" --name "SATA" --add sata --controller IntelAHCI --portcount 2
-VBoxManage storageattach "%C1%" --storagectl "SATA" --device 0 --port 0 --type hdd --medium "%DisksBaseFolderTarget%\%VBoxNameC2%.qcow"
-VBoxManage storageattach "%C1%" --storagectl "SATA" --device 0 --port 1 --type dvddrive --medium "none"
+VBoxManage storagectl "%C2%" --name "SATA" --add sata --controller IntelAHCI --portcount 2
+VBoxManage storageattach "%C2%" --storagectl "SATA" --device 0 --port 0 --type hdd --medium "%DisksBaseFolderTarget%\%VBoxNameC2%.qcow"
+VBoxManage storageattach "%C2%" --storagectl "SATA" --device 0 --port 1 --type dvddrive --medium "none"
 VBoxManage modifyvm "%C2%" --nic1 natnetwork --nictype1 virtio --nat-network1 "%NAT%" --vram 30
 VBoxManage sharedfolder remove "%C2%" --name=_Shared
 VBoxManage sharedfolder add "%C2%" --name=_Shared --hostpath="%SharedFolder%"

@@ -9,69 +9,47 @@ echo
 cd "${0%/*}" || exit
 log=./vbm_000_salida.sal
 # cd /run/media/deiv70/P300-NF/gomgardav/_ASIR2/ASO/_Exa/dirEXA212201GOMGARDAV/
-cd /home/deiv70/Documentos/dirEXA212203GOMGARDAV/ || exit
+# cd /home/deiv70/Documentos/dirEXA212205GOMGARDAV/ || exit
 source ./00_00_VAR.sh
 
-# VMsBaseFolder=/run/media/$USER/P300-NF/_VBox/
-OVAsBaseFolder=/run/media/$USER/P300-BF/_OVAs/ASO
-DisksBaseFolderSource=/run/media/$USER/P300-BF/_Disks
-DisksBaseFolderTarget=/run/media/$USER/5C5C75F75C75CC70/VMs/Disks
-VMsBaseFolder=/run/media/$USER/5C5C75F75C75CC70/VMs/Disks
-
-## VBoxManage Variables:
-NumPuesto=3
-NumEXA=4
-
-VarEXA=EXA21220${NumEXA}GOMGARDAV
-# VarEXA=EXA2021MARZO05GOMGARDAV
-S1=S1$VarEXA
-	VBoxNameS1=COSbase8
-C1=C1$VarEXA
-	VBoxNameC1=ubase20_04
-C2=C2$VarEXA
-	VBoxNameC2=wbase21H1
-
-NAT=${NumEXA}pyme0$NumPuesto
-# NAT=exa2021marzo05
-#	OVA=/run/media/$USER/P300-BF\VirtualMachines\_OVAs\ASO\%VBoxName%.ova
-#	Disk="$VMsBaseFolder/$S1\%VBoxName%-disk001.vmdk"
-#	SettingsFile="$VMsBaseFolder/$S1/$S1.vbox"
-# BaseFolder=D:\gomgardav\ASO\dirEXA202104GOMGARDAV
-SharedFolder=$(pwd)
-
-VBoxManage natnetwork add --netname "$NAT" --network "172.$NumEXA.$NumPuesto.0/24" --enable --dhcp off
-VBoxManage natnetwork modify --netname "$NAT" --port-forward-4 "SSH-${NumPuesto}1:tcp:[]:${NumPuesto}22${NumPuesto}1:[172.$NumEXA.$NumPuesto.${NumPuesto}1]:22"
-VBoxManage natnetwork modify --netname "$NAT" --port-forward-4 "80-${NumPuesto}1:tcp:[]:${NumPuesto}80${NumPuesto}1:[172.$NumEXA.$NumPuesto.${NumPuesto}1]:80"
-VBoxManage natnetwork modify --netname "$NAT" --port-forward-4 "SSH-${NumPuesto}2:tcp:[]:${NumPuesto}22${NumPuesto}2:[172.$NumEXA.$NumPuesto.${NumPuesto}2]:22"
-VBoxManage natnetwork modify --netname "$NAT" --port-forward-4 "SSH-${NumPuesto}3:tcp:[]:${NumPuesto}22${NumPuesto}3:[172.$NumEXA.$NumPuesto.${NumPuesto}3]:22"
+VBoxManage natnetwork add --netname "$NAT" --network "172.16.$NumExa.0/24" --enable --dhcp off
+VBoxManage natnetwork modify --netname "$NAT" --port-forward-4 "SSH-${NumUser}1:tcp:[]:${NumUser}22${NumUser}1:[172.16.${NumExa}.${NumUser}1]:22"
+VBoxManage natnetwork modify --netname "$NAT" --port-forward-4 "80-${NumUser}1:tcp:[]:${NumUser}80${NumUser}1:[172.16.${NumExa}.${NumUser}1]:80"
+VBoxManage natnetwork modify --netname "$NAT" --port-forward-4 "SSH-${NumUser}2:tcp:[]:${NumUser}22${NumUser}2:[172.16.${NumExa}.${NumUser}2]:22"
+VBoxManage natnetwork modify --netname "$NAT" --port-forward-4 "SSH-${NumUser}3:tcp:[]:${NumUser}22${NumUser}3:[172.16.${NumExa}.${NumUser}3]:22"
 VBoxManage natnetwork start --netname "$NAT"
 
-VBoxManage import "/run/media/$USER/P300-BF/_OVAs/ASO/$VBoxNameS1.ova" --vsys 0 --vmname "$S1" --unit 14 --disk "$VMsBaseFolder/$S1/$VBoxNameS1-disk001.vmdk" --settingsfile "$VMsBaseFolder/$S1/$S1.vbox"
-VBoxManage createmedium disk --filename "$VMsBaseFolder/$S1/$VBoxNameS1-Datos.vmdk" --size 10240 --format VMDK
-VBoxManage storageattach "$S1" --storagectl "SATA" --device 0 --port 1 --type hdd --medium "$VMsBaseFolder/$S1/$VBoxNameS1-Datos.vmdk"
-VBoxManage modifyvm "$S1" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT"
-# VBoxManage modifyvm "$S1" --memory 512
-VBoxManage modifyvm "$S1" --memory 1024
-VBoxManage modifyvm "$S1" --cpus 1
+# VBoxManage import "$OVAsBaseFolder/${VBoxNameS1}.ova" --vsys 0 --vmname "%S1%" --unit 12 --disk "%VMsBaseFolder%\%S1%/${VBoxNameS1}-disk001.vmdk" --settingsfile "%VMsBaseFolder%\%S1%\%S1%.vbox"
+VBoxManage createvm --name "$S1" --register --ostype RedHat_64
+VBoxManage createmedium disk --filename "${DisksBaseFolderTarget}/${VBoxNameS1}-Datos.qcow" --size 10240 --format QCOW
+VBoxManage storagectl "$S1" --name "VirtIO" --add virtio --controller VirtIO
+VBoxManage storagectl "$S1" --name "SATA" --add sata --controller IntelAHCI --portcount 2
+VBoxManage storageattach "$S1" --storagectl "VirtIO" --device 0 --port 0 --type hdd --medium "${DisksBaseFolderTarget}/${VBoxNameS1}.qcow"
+VBoxManage storageattach "$S1" --storagectl "SATA" --device 0 --port 0 --type hdd --medium "${DisksBaseFolderTarget}/${VBoxNameS1}-Datos.qcow"
+VBoxManage storageattach "$S1" --storagectl "SATA" --device 0 --port 1 --type dvddrive --medium "none"
+VBoxManage modifyvm "$S1" --nic1 natnetwork --nictype1 virtio --nat-network1 "${NAT}" --vram 16 --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm
 VBoxManage sharedfolder remove "$S1" --name=_Shared
-VBoxManage sharedfolder add "$S1" --name=_Shared --hostpath="$SharedFolder"
+VBoxManage sharedfolder add "$S1" --name=_Shared --hostpath="${SharedFolder}"
 
-VBoxManage import "/run/media/$USER/P300-BF/_OVAs/ASO/$VBoxNameC1.ova" --vsys 0 --vmname "$C1" --unit 14 --disk "$VMsBaseFolder/$C1/$VBoxNameC1-disk001.vmdk" --settingsfile "$VMsBaseFolder/$C1/$C1.vbox"
-VBoxManage modifyvm "$C1" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT"
-# VBoxManage modifyvm "$C1" --memory 1024
-VBoxManage modifyvm "$C1" --memory 2048
-VBoxManage modifyvm "$C1" --cpus 1
+# VBoxManage import "$OVAsBaseFolder/${VBoxNameC1}.ova" --vsys 0 --vmname "$C1" --unit 14 --disk "%VMsBaseFolder%/${C1}/${VBoxNameC1}-disk001.vmdk" --settingsfile "%VMsBaseFolder%/${C1}/${C1}.vbox"
+VBoxManage createvm --name "$C1" --register --ostype Ubuntu_64
+VBoxManage storagectl "$C1" --name "VirtIO" --add virtio --controller VirtIO
+VBoxManage storagectl "$C1" --name "SATA" --add sata --controller IntelAHCI --portcount 2
+VBoxManage storageattach "$C1" --storagectl "VirtIO" --device 0 --port 0 --type hdd --medium "${DisksBaseFolderTarget}/${VBoxNameC1}.qcow"
+VBoxManage storageattach "$C1" --storagectl "SATA" --device 0 --port 1 --type dvddrive --medium "none"
+VBoxManage modifyvm "$C1" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT" --vram 36 --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm
 VBoxManage sharedfolder remove "$C1" --name=_Shared
-VBoxManage sharedfolder add "$C1" --name=_Shared --hostpath="$SharedFolder"
-VBoxManage setextradata "$C1" GUI/MenuBar/Enabled false
-VBoxManage setextradata "$C1" GUI/StatusBar/Enabled false
+VBoxManage sharedfolder add "$C1" --name=_Shared --hostpath="${SharedFolder}"
+#VBoxManage setextradata "$C1" GUI/MenuBar/Enabled false
+#VBoxManage setextradata "$C1" GUI/StatusBar/Enabled false
 
-VBoxManage import "/run/media/$USER/P300-BF/_OVAs/ASO/$VBoxNameC2.ova" --vsys 0 --vmname "$C2" --unit 14 --disk "$VMsBaseFolder/$C2/$VBoxNameC2-disk001.vmdk" --settingsfile "$VMsBaseFolder/$C2/$C2.vbox"
-VBoxManage modifyvm "$C2" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT"
-# VBoxManage modifyvm "$C2" --memory 1024
-VBoxManage modifyvm "$C2" --memory 2048
-VBoxManage modifyvm "$C2" --cpus 1
+# VBoxManage import "$OVAsBaseFolder/${VBoxNameC2}.ova" --vsys 0 --vmname "$C2" --unit 14 --disk "%VMsBaseFolder%/${C2}/${VBoxNameC2}-disk001.vmdk" --settingsfile "%VMsBaseFolder%/${C2}/${C2}.vbox"
+VBoxManage createvm --name "$C2" --register --ostype Windows10_64
+VBoxManage storagectl "$C2" --name "SATA" --add sata --controller IntelAHCI --portcount 2
+VBoxManage storageattach "$C2" --storagectl "SATA" --device 0 --port 0 --type hdd --medium "${DisksBaseFolderTarget}/${VBoxNameC2}.qcow"
+VBoxManage storageattach "$C2" --storagectl "SATA" --device 0 --port 1 --type dvddrive --medium "none"
+VBoxManage modifyvm "$C2" --nic1 natnetwork --nictype1 virtio --nat-network1 "$NAT" --vram 36 --memory 1536 --cpus 1 --cpuhotplug on --paravirtprovider kvm
 VBoxManage sharedfolder remove "$C2" --name=_Shared
-VBoxManage sharedfolder add "$C2" --name=_Shared --hostpath="$SharedFolder"
+VBoxManage sharedfolder add "$C2" --name=_Shared --hostpath="${SharedFolder}"
 
 VBoxManage setextradata global GUI/MiniToolBarAlignment Top

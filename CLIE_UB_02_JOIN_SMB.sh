@@ -132,7 +132,7 @@ EOF
 				read -p "Pulsa Enter para Continuar..." Enter
 			done;;
 
-		3 ) init 6;;
+		4 ) init 6;;
 		
 		0 ) Exit=yes; break;;
 

@@ -10,7 +10,7 @@ exec > >(tee "$log") 2>&1
 #source ./"$Functions"
 
 export NumUser=3
-export NumExa=4
+export NumExa=5
 export VarExa=EXA21220${NumExa}GOMGARDAV
 #export VarExa=EXA2021MARZO05GOMGARDAV
 export Threads=9
@@ -22,6 +22,28 @@ export Extension=LOCAL
 # export dominio=${NumExa}pyme0$NumUser
 export dominio=${NumExa}apyme0$NumUser
 export extension=local
+
+## VBoxManage Variables:
+export OVAsBaseFolder=/run/media/$USER/P300-BF/_OVAs/ASO
+export DisksBaseFolderSource=/run/media/$USER/P300-BF/_Disks
+export DisksBaseFolderTarget=/mnt/5C5C75F75C75CC70/VMs/Disks
+export VMsBaseFolder=/mnt/5C5C75F75C75CC70/VMs/Disks
+# export OVA=/run/media/$USER/P300-BF\VirtualMachines\_OVAs\ASO\%VBoxName%.ova
+# export Disk="$VMsBaseFolder/$S1\%VBoxName%-disk001.vmdk"
+# export SettingsFile="$VMsBaseFolder/$S1/$S1.vbox"
+# export BaseFolder=D:\gomgardav\ASO\dirEXA202104GOMGARDAV
+
+export S1=S1$VarExa
+export VBoxNameS1=COSbase8
+export C1=C1$VarExa
+export VBoxNameC1=ubase20_04
+export C2=C2$VarExa
+export VBoxNameC2=wbase21H1
+
+export NAT=${dominio}
+# export NAT=exa2021marzo05
+SharedFolder="$(pwd)"
+export SharedFolder
 
 export HostnameServ=S1
 export HostnameClie=C1
