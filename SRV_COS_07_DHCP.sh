@@ -29,14 +29,14 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
     case "$SalidaMenu" in
 
-        1 ) dnf -y update && dnf -y upgrade;;
+        1 ) yum update -y && ym upgrade -y;;
 
         2 ) HISTFILE=~/.bash_history && set -o history && history > ./srv_cos_07-history_"$(date +%F_%H-%M-%S)".his && history -c && set +o history && HISTFILE="";;
 
         3 ) 
             rm "$log"
 			dnf -y update
-			dnf -y install dhcp-server
+			dnf -y install dhcp dhcp-devel dhcp-libs
             systemctl enable dhcpd
 			systemctl stop dhcpd
 
@@ -48,7 +48,7 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 #
 
 # option definitions common to all supported networks...
-option domain-name "$Dominio.$Extension";
+option domain-name "$dominio.$extension";
 option domain-name-servers $Dns;
 option routers $IpGatewayDhcp;
 
@@ -60,7 +60,7 @@ max-lease-time 7200;
 # behavior of the version 2 packages ('none', since DHCP v2 didn't
 # have support for DDNS.)
 ddns-update-style interim;
-ddns-domainname "$Dominio.$Extension";
+ddns-domainname "$dominio.$extension";
 update-static-leases on;
 
 # If this DHCP server is the official DHCP server for the local
@@ -169,7 +169,7 @@ host $HostnameClie {
 }
 
 
-zone $Dominio.$Extension. {
+zone $dominio.$extension. {
         primary 127.0.0.1;
 }
 

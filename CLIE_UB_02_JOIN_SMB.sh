@@ -61,8 +61,8 @@ netgroup:       nis
 
 EOF
 
-			mkdir -p /home/$Dominio/users
-			mkdir -p /comun/VentasExtranjero
+			mkdir -p /home/$dominio
+			mkdir -p /comun
 
 			cat << EOF > /etc/$HostnameServ.cred
 user=Administrator
@@ -70,20 +70,22 @@ password=abc123.
 EOF
 			chmod 700 /etc/$HostnameServ.cred
 
-			#echo "\\\\$HostnameServ\users\					/home/$Dominio/users		cifs		defaults,rw,relatime,acl,user_xattr                 0 0" >> /etc/fstab
+			#echo "\\\\$HostnameServ\users\					/home/$dominio/users		cifs		defaults,rw,relatime,acl,user_xattr                 0 0" >> /etc/fstab
 			#echo "\\\\$HostnameServ\comun\					/comun			cifs		defaults,rw,relatime,acl,user_xattr                 0 0" >> /etc/fstab
 
-			echo "$HostnameServ:/home/$Dominio  /home/$Dominio nfs   auto,defaults,rw,relatime,acl,_netdev,nolock,intr,bg,timeo=300,actimeo=1800 0 0" >> /etc/fstab
+			echo "$HostnameServ:/home/$dominio  /home/$dominio nfs   auto,defaults,rw,relatime,acl,_netdev,nolock,intr,bg,timeo=300,actimeo=1800 0 0" >> /etc/fstab
 			echo "$HostnameServ:/comun       /comun    nfs   auto,defaults,rw,relatime,acl,_netdev,relatime,nolock,intr,bg,timeo=300,actimeo=1800 0 0" >> /etc/fstab
+			
+			mount -a
 
 			mv /etc/samba/smb.conf /etc/samba/smb.conf.org
 
 			cat << EOF > /etc/samba/smb.conf
 # Global parameters
 [global]
-	realm = $Dominio.$Extension
-	workgroup = $Dominio
-	security=ads
+	realm = $dominio.$extension
+	workgroup = $dominio
+	security = ads
 	kerberos method = secrets and keytab
     log file = /var/log/samba/%m.log
     dedicated keytab file = /etc/krb5.keytab
@@ -102,17 +104,17 @@ EOF
 	idmap config * : backend = tdb  
 	idmap config * : range = 3000-7999
 
-	idmap config $Dominio : default = yes
-	idmap config $Dominio : backend = ad
-	idmap config $Dominio : schema_mode = rfc2307
-	idmap config $Dominio : range = 10000-999999
-	idmap config $Dominio : unix_nss_info = yes
-	idmap config $Dominio : unix_primary_group = yes
+	idmap config $dominio : default = yes
+	idmap config $dominio : backend = ad
+	idmap config $dominio : schema_mode = rfc2307
+	idmap config $dominio : range = 10000-999999
+	idmap config $dominio : unix_nss_info = yes
+	idmap config $dominio : unix_primary_group = yes
 
 	username map = /etc/samba/user.map
 
 	template shell = /bin/bash
-	template homedir = /home/$Dominio/users/%U
+	template homedir = /home/$dominio/users/%U
 
 	vfs objects = dfs_samba4 acl_xattr
 	map acl inherit = yes
@@ -120,11 +122,11 @@ EOF
 EOF
 
  			cat << EOF > /etc/samba/user.map
-root = $Dominio\Administrator
+root = $dominio\Administrator
 users = BUILTIN\users
 EOF
 
-			#net ads join -U Administrator
+			net ads join -U Administrator
 
 			Enter="Enter"
 			while [ -n "$Enter" ]; do

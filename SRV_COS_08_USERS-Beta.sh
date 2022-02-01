@@ -153,7 +153,7 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
     case "$SalidaMenu" in
 
-        1 ) dnf -y update && dnf -y upgrade;;
+        1 ) yum update -y && ym upgrade -y;;
 
         2 ) HISTFILE=~/.bash_history && set -o history && history >> history-004.his && history -c && set +o history && HISTFILE="";;
 
@@ -162,7 +162,7 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 			_initialize_arrays
 			_process_Add_Users_file
 
-			samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$Dominio"
+			samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$dominio"
 
 			#m=$n+1
 			cat << EOF > ~/samba/SMB_04_02_QUOTA.sh
@@ -179,17 +179,17 @@ log=./_LogScriptSMB_04_02.sal
 
 useradd general -M -N -u 1001
 passwd -l general
-setquota -u general $QuotaDefaultSize $QuotaDefaultSize 0 0 /home/$Dominio
+setquota -u general $QuotaDefaultSize $QuotaDefaultSize 0 0 /home/$dominio
 #setquota -u general $QuotaDefaultSize $QuotaDefaultSize 0 0 /comun
 
-#setquota -u  $QuotaDefaultSize $QuotaDefaultSize 0 0 /home/$Dominio
+#setquota -u  $QuotaDefaultSize $QuotaDefaultSize 0 0 /home/$dominio
 #setquota -u  $QuotaDefaultSize $QuotaDefaultSize 0 0 /comun
 
 EOF
 
 			for (( i = 0, n = 0 ; i <= 0 ; n++ ))
 			do
-				samba-tool group add "${A_GruposP[$n]}" --gid-number 1500$n --nis-domain="$Dominio"
+				samba-tool group add "${A_GruposP[$n]}" --gid-number 1500$n --nis-domain="$dominio"
 
 				export "${A_GruposP[$n]}"=1500$n
 				nn=$((n+1))
@@ -201,7 +201,7 @@ EOF
 
 			for (( i = 0, n = 0 ; i <= 0 ; n++ ))
 			do
-				samba-tool group add "${A_GruposS[$n]}" --gid-number 1700$n --nis-domain="$Dominio"
+				samba-tool group add "${A_GruposS[$n]}" --gid-number 1700$n --nis-domain="$dominio"
 
 				export "${A_GruposS[$n]}"=1700$n
 				nn=$((n+1))
@@ -213,7 +213,7 @@ EOF
 
 			for (( i = 0, n = 0 ; i <= 0 ; n++ ))
 			do
-				samba-tool user create "${A_User[$n]}" abc123. --nis-domain="$Dominio" --login-shell=/bin/bash --uid-number="${A_UserUID[$n]}" --gid-number="${!A_UE_GrupoP[$n]}" --unix-home=/home/"$Dominio"/users/"${A_User[$n]}" --home-directory="\\\\S1\users\\${A_User[$n]}" --home-drive=L: --profile-path="\\\\S1\profiles\\${A_User[$n]}" --script-path="\\\\S1\netlogon\\${A_User[$n]}.cmd"
+				samba-tool user create "${A_User[$n]}" abc123. --nis-domain="$dominio" --login-shell=/bin/bash --uid-number="${A_UserUID[$n]}" --gid-number="${!A_UE_GrupoP[$n]}" --unix-home=/home/"$dominio"/users/"${A_User[$n]}" --home-directory="\\\\S1\users\\${A_User[$n]}" --home-drive=L: --profile-path="\\\\S1\profiles\\${A_User[$n]}" --script-path="\\\\S1\netlogon\\${A_User[$n]}.cmd"
 
 				samba-tool group addmembers "${A_UE_GrupoP[$n]}" "${A_User[$n]}"
 
@@ -229,12 +229,12 @@ EOF
 					samba-tool group addmembers "$m" "${A_User[$n]}"
 				done
 				
-					mkdir /home/"$Dominio"/users/"${A_User[$n]}"
-					chown "$Dominio\\${A_User[$n]}":"$Dominio\\${A_UE_GrupoP[$n]}" /home/"$Dominio"/users/"${A_User[$n]}"
-					#mkdir /home/"$Dominio"/profiles/"${A_User[$n]}".V6
-					#chown "$Dominio\\${A_User[$n]}":"$Dominio\\${A_UE_GrupoP[$n]}" /home/"$Dominio"/profiles/"${A_User[$n]}".V6
+					mkdir /home/"$dominio"/users/"${A_User[$n]}"
+					chown "$dominio\\${A_User[$n]}":"$dominio\\${A_UE_GrupoP[$n]}" /home/"$dominio"/users/"${A_User[$n]}"
+					#mkdir /home/"$dominio"/profiles/"${A_User[$n]}".V6
+					#chown "$dominio\\${A_User[$n]}":"$dominio\\${A_UE_GrupoP[$n]}" /home/"$dominio"/profiles/"${A_User[$n]}".V6
 
-					cat << EOF > /home/"$Dominio"/scripts/"${A_User[$n]}".cmd
+					cat << EOF > /home/"$dominio"/scripts/"${A_User[$n]}".cmd
 @echo off
 chcp 65001
 
@@ -243,8 +243,8 @@ net use S: \\\\$HostnameServ\comun
 
 EOF
 
-				chown "$Dominio\\${A_User[$n]}":"BUILTIN\\Administrators" /home/"$Dominio"/scripts/"${A_User[$n]}".cmd
-				chmod u+x /home/"$Dominio"/scripts/"${A_User[$n]}".cmd
+				chown "$dominio\\${A_User[$n]}":"BUILTIN\\Administrators" /home/"$dominio"/scripts/"${A_User[$n]}".cmd
+				chmod u+x /home/"$dominio"/scripts/"${A_User[$n]}".cmd
 
 					cat << EOF >> ~/samba/SMB_04_02_QUOTA.sh
 edquota -p general "${A_User[$n]}"

@@ -1,4 +1,5 @@
 #-> UID:user:[Dept - ]Nombre Completo:G-Primario:G-Secundaio,G-Secundario2,...
+ :
 10000:noa04:Encargada - Noa:encargado:g_ventas,g_vental,g_voceania
 11000:fermin04:Encargado - Fermín:encargado:g_ventas,g_vental,g_ventae,g_vasia,g_veuropa,g_voceania
 12000:felipe04:Encargado - Felipe:encargado:g_ventae

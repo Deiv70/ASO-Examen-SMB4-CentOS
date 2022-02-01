@@ -29,7 +29,7 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
     case "$SalidaMenu" in
 
-        1 ) dnf -y update && dnf -y upgrade;;
+        1 ) yum update -y && ym upgrade -y;;
 
         2 ) HISTFILE=~/.bash_history && set -o history && history > ./srv_cos_01-history_"$(date +%F_%H-%M-%S)".his && history -c && set +o history && HISTFILE="";;
 
@@ -39,38 +39,75 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 cat << EOF > /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-$IpServ   $HostnameServ.$Dominio.$Extension $Dominio.$Extension $HostnameServ
+$IpServ   $HostnameServ.$dominio.$extension $dominio.$extension $HostnameServ
 
 EOF
 
-hostnamectl set-hostname $HostnameServ.$Dominio.$Extension
+hostnamectl set-hostname $HostnameServ.$dominio.$extension
 
-ifdown enp0s3
-cat << EOF > /etc/sysconfig/network-scripts/ifcfg-enp0s3
+ifdown eth0
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-eth0
 TYPE=Ethernet
 PROXY_METHOD=none
 BROWSER_ONLY=no
 BOOTPROTO=static
 DEFROUTE=yes
 IPV4_FAILURE_FATAL=no
-IPV6INIT=yes
+IPV6INIT=no
 IPV6_AUTOCONF=yes
 IPV6_DEFROUTE=yes
 IPV6_FAILURE_FATAL=no
-NAME=enp0s3
-UUID=$(uuidgen enp0s3)
-DEVICE=enp0s3
+NAME=eth0
+UUID=$(uuidgen eth0)
+DEVICE=eth0
 ONBOOT=yes
 IPADDR=$IpServ
 NETMASK=$Netmask
 GATEWAY=$IpGateway
-DNS1=$DnsNat
-DNS2=$Dns
-DOMAIN=$Dominio.$Extension
-SEARCH=$Dominio.$Extension
+DNS1=$Dns
+DNS2=$DnsNat
+DOMAIN=$dominio.$extension
+SEARCH=$dominio.$extension
 
 EOF
-sleep 2 && ifup enp0s3
+sleep 2 && ifup eth0
+
+cat << EOF > /etc/yum.conf
+[main]
+bugtracker_url=http://bugs.centos.org/set_project.php?project_id=23&ref=http://bugs.centos.org/bug_report_page.php?category=yum
+distroverpkg=centos-release
+cachedir=/var/cache/yum/\$basearch/\$releasever
+keepcache=0
+debuglevel=2
+logfile=/var/log/yum.log
+exactarch=1
+obsoletes=1
+plugins=1
+gpgcheck=1
+#installonly_limit=5
+installonly_limit=3
+clean_requirements_on_remove=True
+skip_if_unavailable=False
+best=True
+fastestmirror=True
+max_parallel_downloads=10
+#: Require all packages to be available
+strict=False
+
+#  This is the default, if you make this bigger yum won't see if the metadata
+# is newer on the remote and so you'll "gain" the bandwidth of not having to
+# download the new metadata and "pay" for it by yum not having correct
+# information.
+#  It is esp. important, to have correct metadata, for distributions like
+# Fedora which don't keep old packages around. If you don't like this checking
+# interupting your command line usage, it's much better to have something
+# manually check the metadata once an hour (yum-updatesd will do this).
+# metadata_expire=90m
+
+# PUT YOUR REPOS HERE OR IN separate files named file.repo
+# in /etc/yum.repos.d
+
+EOF
 
 cat << EOF > /etc/dnf/dnf.conf
 [main]
@@ -81,16 +118,23 @@ best=True
 skip_if_unavailable=False
 fastestmirror=True
 max_parallel_downloads=10
+#: Require all packages to be available
+strict=True
 
 EOF
 
-wget https://download.opensuse.org/repositories/shells:/zsh-users:/zsh-completions/CentOS_8/shells:zsh-users:zsh-completions.repo -O /etc/yum.repos.d/zsh-completions.repo
+#wget https://download.opensuse.org/repositories/shells:/zsh-users:/zsh-completions/CentOS_8/shells:zsh-users:zsh-completions.repo -O /etc/yum.repos.d/zsh-completions.repo
 
 #dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && dnf -y update
-dnf -y update && dnf -y install epel-release dnf-plugins-core openssh-server zsh-completions bpytop screen tmux && dnf -y update && dnf config-manager --set-enabled powertools && dnf -y update
-dnf -y install gcc make perl bzip2 git elfutils-devel.x86_64 elfutils-libelf-devel dkms selinux-policy-devel #kernel-headers kernel-devel #python
 
-#dnf install https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
+#: [ [ CentOS 8 ] ] ==>
+#dnf -y update && dnf -y install epel-release dnf-plugins-core openssh-server zsh-completions bpytop screen tmux && dnf -y update && dnf config-manager --set-enabled powertools && dnf -y update
+#: [ [ CentOS 7 ] ] ==>
+yum update -y && yum install -y dnf dnf-plugins-core yum-plugin-copr epel-release openssh-server screen tmux && yum copr enable -y sergiomb/SambaAD && yum update -y
+
+yum install -y chrony gcc make perl bzip2 git elfutils-devel.x86_64 elfutils-libelf-devel dkms selinux-policy-devel #kernel-headers kernel-devel #python
+
+#yum install https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm
 #rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
 #dnf -y install xorg-x11-server-Xorg.x86_64 xorg-x11-server-common.x86_64 xorg-x11-drv-vesa.x86_64 xorg-x11-drv-vmware.x86_64 xorg-x11-utils.x86_64 
 
@@ -131,6 +175,59 @@ EOF
 #EOF
 
 # bind_ver=$(named -v | awk -F' ' '{print $2}' | cut -d . -f -2)
+
+cat << EOF > /etc/chrony.conf
+# These servers were defined in the installation:
+server 0.centos.pool.ntp.org iburst
+server 1.centos.pool.ntp.org iburst
+server 2.centos.pool.ntp.org iburst
+server 3.centos.pool.ntp.org iburst
+# Use public servers from the pool.ntp.org project.
+# Please consider joining the pool (http://www.pool.ntp.org/join.html).
+
+# Record the rate at which the system clock gains/losses time.
+driftfile /var/lib/chrony/drift
+
+# Allow the system clock to be stepped in the first three updates
+# if its offset is larger than 1 second.
+makestep 1.0 3
+
+# Enable kernel synchronization of the real-time clock (RTC).
+rtcsync
+
+# Enable hardware timestamping on all interfaces that support it.
+#hwtimestamp *
+
+# Increase the minimum number of selectable sources required to adjust
+# the system clock.
+#minsources 2
+
+# Allow NTP client access from local network.
+allow $IpNetwork/$Mask
+
+# Serve time even if not synchronized to a time source.
+#local stratum 10
+
+# Specify file containing keys for NTP authentication.
+#keyfile /etc/chrony.keys
+
+# Specify directory for log files.
+logdir /var/log/chrony
+
+# Select which information is logged.
+#log measurements statistics tracking
+
+# Get TAI-UTC offset and leap seconds from the system tz database.
+#leapsectz right/UTC
+
+EOF
+
+systemctl restart chronyd
+timedatectl set-ntp true
+firewall-cmd --add-service=ntp --permanent 
+firewall-cmd --reload
+
+systemctl disable firewalld --now
 
 			#mkdir ~/samba && cp -r /mnt/_Shared/. ~/samba/.
 

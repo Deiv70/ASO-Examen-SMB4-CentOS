@@ -29,7 +29,7 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
     case "$SalidaMenu" in
 
-        1 ) dnf -y update && dnf -y upgrade;;
+        1 ) yum update -y && ym upgrade -y;;
 
         2 ) HISTFILE=~/.bash_history && set -o history && history > ./srv_cos_05-history_"$(date +%F_%H-%M-%S)".his && history -c && set +o history && HISTFILE="";;
 

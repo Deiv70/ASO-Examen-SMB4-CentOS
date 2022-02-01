@@ -29,55 +29,56 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
     case "$SalidaMenu" in
 
-        1 ) dnf -y update && dnf -y upgrade;;
+        1 ) yum update -y && ym upgrade -y;;
 
         2 ) HISTFILE=~/.bash_history && set -o history && history > ./srv_cos_06-history_"$(date +%F_%H-%M-%S)".his && history -c && set +o history && HISTFILE="";;
 
         3 ) 
 
-#mkdir -p /comun/VentasExtranjero #&& mkdir /home/$Dominio
+#mkdir -p /comun/VentasExtranjero #&& mkdir /home/$dominio
 
 #cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /comun
 #cp -ra /comun/scripts /comun/VentasExtranjero
 #rm -rf /comun/Policies
 #rm -rf /comun/scripts
-# chown -R "$Dominio\\Administrator":"$Dominio\\Domain Users" /comun/VentasExtranjero
+# chown -R "$dominio\\Administrator":"$dominio\\Domain Users" /comun/VentasExtranjero
 # chmod -R 750 /comun/VentasExtranjero
 
-#cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$Dominio
+#cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$dominio
 
 
-# chown -R "$Dominio\\Administrator":"$Dominio\\Domain Users" /home/$Dominio
-# chmod -R 750 /home/$Dominio
-#rm -rf /home/$Dominio/Policies
+# chown -R "$dominio\\Administrator":"$dominio\\Domain Users" /home/$dominio
+# chmod -R 750 /home/$dominio
+#rm -rf /home/$dominio/Policies
+mkdir /{comun,home/$dominio}
 
-echo "/dev/sdb1					/home/$Dominio		ext4		defaults,acl,user_xattr,errors=remount-ro,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0                 0 0" >> /etc/fstab
+echo "/dev/sdb1					/home/$dominio		ext4		defaults,acl,user_xattr,errors=remount-ro,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0                 0 0" >> /etc/fstab
 echo "/dev/sdb2					/comun			ext4		defaults,acl,user_xattr,errors=remount-ro,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0                 0 0" >> /etc/fstab
-#echo "/dev/sdb1					/home/$Dominio		ext4		defaults,acl,user_xattr,uid=0,gid=100,umask=007                 0 0" >> /etc/fstab
+#echo "/dev/sdb1					/home/$dominio		ext4		defaults,acl,user_xattr,uid=0,gid=100,umask=007                 0 0" >> /etc/fstab
 #echo "/dev/sdb2					/comun			ext4		defaults,acl,user_xattr,uid=0,gid=100,umask=007                 0 0" >> /etc/fstab
-#touch /home/$Dominio/aquota.user /home/$Dominio/aquota.group /comun/aquota.user /comun/aquota.group
-#chmod 600 /home/$Dominio/aquota.* && chmod 600 /comun/aquota.*
-#quotacheck -fugm /home/$Dominio && quotacheck -fugm /comun
-#quotaon -v /home/$Dominio && quotaon -v /comun
+#touch /home/$dominio/aquota.user /home/$dominio/aquota.group /comun/aquota.user /comun/aquota.group
+#chmod 600 /home/$dominio/aquota.* && chmod 600 /comun/aquota.*
+#quotacheck -fugm /home/$dominio && quotacheck -fugm /comun
+#quotaon -v /home/$dominio && quotaon -v /comun
 mount -a
-
-mkdir -p /comun/VentasExtranjero
-mkdir -p /home/$Dominio/{users,profiles,scripts}
-mkdir /home/$Dominio/scripts
-
-setfacl -m g:"$Dominio\Domain Admins":rwx /home/$Dominio/profiles/
-setfacl -dm g:"$Dominio\Domain Admins":rwx /home/$Dominio/profiles/
-setfacl -m g:"$Dominio\Domain Users":rwx /home/$Dominio/profiles/
 
 quotacheck -vaugfcm
 quotaon -vaug
+
+mkdir -p /comun/Ventas/{Ventas_Extranjero,Ventas_Local,Vasia,Veuropa,Voceania}
+mkdir -p /home/$dominio/{users,profiles,scripts}
+#mkdir /home/$dominio/scripts
+
+setfacl -m g:"$dominio\Domain Admins":rwx /home/$dominio/profiles/
+setfacl -dm g:"$dominio\Domain Admins":rwx /home/$dominio/profiles/
+setfacl -m g:"$dominio\Domain Users":rwx /home/$dominio/profiles/
 
 firewall-cmd --permanent --add-service=nfs
 firewall-cmd --permanent --add-service=rpc-bind
 firewall-cmd --permanent --add-service=mountd
 firewall-cmd --reload
 
-echo "/home/$Dominio 	$IpNetwork/255.255.255.0(rw,no_root_squash,no_subtree_check)" > /etc/exports
+echo "/home/$dominio 	$IpNetwork/255.255.255.0(rw,no_root_squash,no_subtree_check)" > /etc/exports
 echo "/comun 			$IpNetwork/255.255.255.0(rw,no_root_squash,no_subtree_check)" >> /etc/exports
 systemctl enable nfs-server.service
 service nfs-server restart
@@ -85,36 +86,36 @@ exportfs -v
 
 #useradd general -M -N -u 1001
 #passwd -l general
-#setquota -u general $QuotaDefaultSize $QuotaDefaultSize  0 0 /home/$Dominio
+#setquota -u general $QuotaDefaultSize $QuotaDefaultSize  0 0 /home/$dominio
 
-#cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$Dominio/.
-#rm -rf /home/$Dominio/Policies
+#cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$dominio/.
+#rm -rf /home/$dominio/Policies
 
-#cp -ra /home/$Dominio/scripts /home/$Dominio/users
-#cp -ra /home/$Dominio/scripts /home/$Dominio/profiles
+#cp -ra /home/$dominio/scripts /home/$dominio/users
+#cp -ra /home/$dominio/scripts /home/$dominio/profiles
 
 #net rpc group add "Unix Admins" -L -U Administrator
-samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$Dominio"
+samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$dominio"
 #net rpc group addmem "Administrators" "Unix Admins" -U Administrator
 samba-tool group addmembers "Administrators" "Unix Admins"
 echo -e "abc123." | net rpc user setprimarygroup Administrator "Domain Admins" -U Administrator
-echo -e "abc123." | net rpc rights grant "$Dominio\\Unix Admins" SeDiskOperatorPrivilege -U "$Dominio\\Administrator"
+echo -e "abc123." | net rpc rights grant "$dominio\\Unix Admins" SeDiskOperatorPrivilege -U "$dominio\\Administrator"
 #net rpc rights list privileges SeDiskOperatorPrivilege -U "Administrator"
 systemctl restart samba-ad-dc.service && sleep 3 && getent group && sleep 3
 
-# chown "$Dominio\\Administrator":"$Dominio\\Unix Admins" /home/$Dominio
-# mkdir -p /home/$Dominio/{profiles,users,VentasExtranjero}
-# chown -R "$Dominio\\Administrator":"$Dominio\\Domain Admins" /home/$Dominio/profiles
-# chown -R "$Dominio\\Administrator":"$Dominio\\Unix Admins" /home/$Dominio/users
-# chmod o+rx /home/$Dominio /home/$Dominio/users
-# #chmod g-w /home/$Dominio
-# chmod g-w -R /home/$Dominio/users
-#chown -R root:users /home/$Dominio/{profiles,users}
+# chown "$dominio\\Administrator":"$dominio\\Unix Admins" /home/$dominio
+# mkdir -p /home/$dominio/{profiles,users,VentasExtranjero}
+# chown -R "$dominio\\Administrator":"$dominio\\Domain Admins" /home/$dominio/profiles
+# chown -R "$dominio\\Administrator":"$dominio\\Unix Admins" /home/$dominio/users
+# chmod o+rx /home/$dominio /home/$dominio/users
+# #chmod g-w /home/$dominio
+# chmod g-w -R /home/$dominio/users
+#chown -R root:users /home/$dominio/{profiles,users}
 
-# mkdir -p /home/$Dominio/users/Administrator
-# chown "$Dominio\\Administrator":"BUILTIN\\Administrators" /home/$Dominio/users/Administrator
-# mkdir -p /home/$Dominio/VentasExtranjero
-#chown -R root:"" /home/$Dominio/VentasExtranjero
+# mkdir -p /home/$dominio/users/Administrator
+# chown "$dominio\\Administrator":"BUILTIN\\Administrators" /home/$dominio/users/Administrator
+# mkdir -p /home/$dominio/VentasExtranjero
+#chown -R root:"" /home/$dominio/VentasExtranjero
 
 
             Enter="Enter"

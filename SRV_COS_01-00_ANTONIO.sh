@@ -12,8 +12,9 @@ source ./00_00_VAR.sh
 
 dnf -y install whois expect
 
-echo -e "abc123." > /tmp/openssl-passwd.txt
-openssl passwd -6 -noverify -in /tmp/openssl-passwd.txt > /tmp/passwd.txt
+#echo -e "abc123." > /tmp/openssl-passwd.txt
+#openssl passwd -1 -noverify -in /tmp/openssl-passwd.txt > /tmp/passwd.txt
+python -c 'import crypt; print(crypt.crypt("abc123.", crypt.mksalt(crypt.METHOD_SHA512)))' > /tmp/passwd.txt
 \rm -f /tmp/openssl-passwd.txt
 
 useradd gomgardav   -u ${UidTucuenta}   -m -U -s /bin/bash -p "$( cat /tmp/passwd.txt )"

@@ -10,6 +10,9 @@ cd ~/samba || exit
 # source ./00_00_VAR.sh
 
 dnf -y install cups cups-ipptool hplip
+dnf -y autoremove
+dnf -y clean all
+
 clear
 lpadmin -p HP_Aula210 -E -v ipp://172.16.210.99/ipp
 lpstat -t

@@ -29,7 +29,7 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
     case "$SalidaMenu" in
 
-        1 ) dnf -y update && dnf -y upgrade;;
+        1 ) yum update -y && ym upgrade -y;;
 
         2 ) HISTFILE=~/.bash_history && set -o history && history > ./srv_cos_03-history_"$(date +%F_%H-%M-%S)".his && history -c && set +o history && HISTFILE="";;
 
@@ -48,11 +48,11 @@ rm /usr/local/samba/private/{*.tdb,*.ldb}
 #cd samba
 
 #gpg --import samba-pubkey.asc
-gunzip samba-4.14.8.tar.gz
+gunzip samba-4.14.12.tar.gz
 #gpg --verify samba-latest.tar.asc
-tar -xf samba-4.14.8.tar
+tar -xf samba-4.14.12.tar
 
-cd samba-4.14.8 || ( return 1 && exit )
+cd samba-4.14.12 || ( return 1 && exit )
 
 
 #./configure -j 3 --enable-fhs --libdir=/lib64 --prefix=/usr --sysconfdir=/etc --localstatedir=/var --sbindir=/sbin/ --bindir=/bin/ --mandir=/usr/share/man/ --with-systemd --with-quotas --enable-selftest --progress
@@ -64,12 +64,13 @@ make -j $Threads install & wait
 
 cd ..
 
-export PATH=/usr/local/samba/bin/:/usr/local/samba/sbin/:$PATH
 cat << EOF >> ~/.bashrc
 
 export PATH=/usr/local/samba/bin/:/usr/local/samba/sbin/:$PATH
 
 EOF
+
+PATH=/usr/local/samba/bin/:/usr/local/samba/sbin/:$PATH
 
 ln -s /usr/local/samba/lib/libnss_winbind.so.2 /lib64/
 ln -s /lib64/libnss_winbind.so.2 /lib64/libnss_winbind.so
@@ -96,13 +97,13 @@ ExecReload=/bin/kill -HUP \$MAINPID
 WantedBy=multi-user.target
 
 EOF
+
 systemctl daemon-reload
 systemctl enable /etc/systemd/user/samba-ad-dc.service
+systemctl daemon-reload
 
 test -f /usr/local/samba/etc/smb.conf.org && cp /usr/local/samba/etc/smb.conf /usr/local/samba/etc/smb.conf.bak || mv /usr/local/samba/etc/smb.conf /usr/local/samba/etc/smb.conf.org
 rm /usr/local/samba/private/krb5.conf
-
-systemctl disable firewalld --now
 
 
             Enter="Enter"

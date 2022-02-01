@@ -74,7 +74,7 @@ dnf -y install docbook-style-xsl gcc gdb gnutls-devel gpgme-devel jansson-devel 
 
 #. ./bootstrap/generated-dists/debian10/bootstrap.sh &&
 # dnf config-manager --set-enabled devel
-# dnf install -y \
+# yum install -y \
 #     --setopt=install_weak_deps=False \
 #     "@Development Tools" \
 #     acl attr autoconf avahi-devel bind-utils binutils bison ccache chrpath \
@@ -200,7 +200,7 @@ systemctl enable /etc/systemd/user/samba-ad-dc.service
 test -f /etc/samba/smb.conf.org && cp /etc/samba/smb.conf /etc/samba/smb.conf.bak || cp /etc/samba/smb.conf /etc/samba/smb.conf.org
 rm /usr/local/samba/private/krb5.conf
 
-samba-tool domain provision --server-role=dc --use-rfc2307 --host-name=$HostnameServ --domain=$Dominio --realm=$Dominio.$Extension --adminpass=abc123. --dns-backend=SAMBA_INTERNAL
+samba-tool domain provision --server-role=dc --use-rfc2307 --host-name=$HostnameServ --domain=$dominio --realm=$dominio.$extension --adminpass=abc123. --dns-backend=SAMBA_INTERNAL
 sleep 3
 
 #cp /var/lib/samba/private/krb5.conf /etc/
@@ -315,20 +315,20 @@ cfdisk /dev/sdb
 mkfs.ext4 -L Usuarios /dev/sdb1
 mkfs.ext4 -L Comun /dev/sdb2
 
-mkdir -p /comun/VentasExtranjero #&& mkdir /home/$Dominio
+mkdir -p /comun/VentasExtranjero #&& mkdir /home/$dominio
 
-cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$Dominio
-chown "$Dominio\Administrator":"$Dominio\Domain Admins" /home/$Dominio
-rm -rf /home/$Dominio/Policies
+cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$dominio
+chown "$dominio\Administrator":"$dominio\Domain Admins" /home/$dominio
+rm -rf /home/$dominio/Policies
 
-echo "/dev/sdb1					/home/$Dominio		ext4		defaults,acl,user_xattr,errors=remount-ro,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0                 0 0" >> /etc/fstab
+echo "/dev/sdb1					/home/$dominio		ext4		defaults,acl,user_xattr,errors=remount-ro,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0                 0 0" >> /etc/fstab
 echo "/dev/sdb2					/comun			ext4		defaults,acl,user_xattr,errors=remount-ro,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0                 0 0" >> /etc/fstab
-#echo "/dev/sdb1					/home/$Dominio		ext4		defaults,acl,user_xattr,uid=0,gid=100,umask=007                 0 0" >> /etc/fstab
+#echo "/dev/sdb1					/home/$dominio		ext4		defaults,acl,user_xattr,uid=0,gid=100,umask=007                 0 0" >> /etc/fstab
 #echo "/dev/sdb2					/comun			ext4		defaults,acl,user_xattr,uid=0,gid=100,umask=007                 0 0" >> /etc/fstab
-#touch /home/$Dominio/aquota.user /home/$Dominio/aquota.group /comun/aquota.user /comun/aquota.group
-#chmod 600 /home/$Dominio/aquota.* && chmod 600 /comun/aquota.*
-#quotacheck -fugm /home/$Dominio && quotacheck -fugm /comun
-#quotaon -v /home/$Dominio && quotaon -v /comun
+#touch /home/$dominio/aquota.user /home/$dominio/aquota.group /comun/aquota.user /comun/aquota.group
+#chmod 600 /home/$dominio/aquota.* && chmod 600 /comun/aquota.*
+#quotacheck -fugm /home/$dominio && quotacheck -fugm /comun
+#quotaon -v /home/$dominio && quotaon -v /comun
 mount -a
 quotacheck -vaugfcm
 quotaon -vaug
@@ -338,40 +338,40 @@ firewall-cmd --permanent --add-service=rpc-bind
 firewall-cmd --permanent --add-service=mountd
 firewall-cmd --reload
 
-echo "/home/$Dominio 	$IpNetwork/255.255.255.0(rw,no_root_squash,no_subtree_check)" > /etc/exports
+echo "/home/$dominio 	$IpNetwork/255.255.255.0(rw,no_root_squash,no_subtree_check)" > /etc/exports
 echo "/comun 			$IpNetwork/255.255.255.0(rw,no_root_squash,no_subtree_check)" >> /etc/exports
 service nfs-server restart
 exportfs -v
 
 #useradd general -M -N -u 1001
 #passwd -l general
-#setquota -u general $QuotaDefaultSize $QuotaDefaultSize  0 0 /home/$Dominio
+#setquota -u general $QuotaDefaultSize $QuotaDefaultSize  0 0 /home/$dominio
 
-cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$Dominio/.
-rm -rf /home/$Dominio/Policies
+cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$dominio/.
+rm -rf /home/$dominio/Policies
 
 #net rpc group add "Unix Admins" -L -U Administrator
-samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$Dominio"
+samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$dominio"
 #net rpc group addmem "Administrators" "Unix Admins" -U Administrator
 samba-tool group addmembers "Administrators" "Unix Admins"
 echo -e "abc123." | net rpc user setprimarygroup Administrator "Domain Admins" -U Administrator
-echo -e "abc123." | net rpc rights grant "$Dominio\Unix Admins" SeDiskOperatorPrivilege -U "$Dominio\Administrator"
+echo -e "abc123." | net rpc rights grant "$dominio\Unix Admins" SeDiskOperatorPrivilege -U "$dominio\Administrator"
 #net rpc rights list privileges SeDiskOperatorPrivilege -U "Administrator"
 
 
-chown "$Dominio\Administrator":"$Dominio\Unix Admins" /home/$Dominio
-mkdir -p /home/$Dominio/{profiles,users,VentasExtranjero}
-chown -R "$Dominio\Administrator":"$Dominio\Domain Admins" /home/$Dominio/profiles
-chown -R "$Dominio\Administrator":"$Dominio\Unix Admins" /home/$Dominio/users
-chmod o+rx /home/$Dominio /home/$Dominio/users
-#chmod g-w /home/$Dominio
-chmod g-w -R /home/$Dominio/users
-#chown -R root:users /home/$Dominio/{profiles,users}
+chown "$dominio\Administrator":"$dominio\Unix Admins" /home/$dominio
+mkdir -p /home/$dominio/{profiles,users,VentasExtranjero}
+chown -R "$dominio\Administrator":"$dominio\Domain Admins" /home/$dominio/profiles
+chown -R "$dominio\Administrator":"$dominio\Unix Admins" /home/$dominio/users
+chmod o+rx /home/$dominio /home/$dominio/users
+#chmod g-w /home/$dominio
+chmod g-w -R /home/$dominio/users
+#chown -R root:users /home/$dominio/{profiles,users}
 
-mkdir -p /home/$Dominio/users/Administrator
-chown "$Dominio\Administrator":"BUILTIN\Administrators" /home/$Dominio/users/Administrator
-mkdir -p /home/$Dominio/VentasExtranjero
-#chown -R root:"" /home/$Dominio/VentasExtranjero
+mkdir -p /home/$dominio/users/Administrator
+chown "$dominio\Administrator":"BUILTIN\Administrators" /home/$dominio/users/Administrator
+mkdir -p /home/$dominio/VentasExtranjero
+#chown -R root:"" /home/$dominio/VentasExtranjero
 
 cp /etc/samba/smb.conf /etc/samba/smb.conf.generated
 
@@ -380,9 +380,9 @@ cat << EOF > /etc/samba/smb.conf
 [global]
 	dns forwarder = 1.1.1.1
 	netbios name = $HostnameServ
-	realm = $Dominio.$Extension
+	realm = $dominio.$extension
 	server role = active directory domain controller
-	workgroup = $Dominio
+	workgroup = $dominio
 
   rpc_server:tcpip = no
   rpc_daemon:spoolssd = embedded
@@ -406,7 +406,7 @@ cat << EOF > /etc/samba/smb.conf
 	winbind nested groups = yes
 
 	template shell = /bin/bash
-	template homedir = /home/$Dominio/users/%U
+	template homedir = /home/$dominio/users/%U
 
 	vfs objects = dfs_samba4 acl_xattr
 	map acl inherit = yes
@@ -416,19 +416,19 @@ cat << EOF > /etc/samba/smb.conf
 	read only = No
 
 [netlogon]
-	path = /home/$Dominio/scripts
+	path = /home/$dominio/scripts
 	read only = No
 
 [profiles]
 	comment = Users profiles
-	path = /home/$Dominio/profiles/
+	path = /home/$dominio/profiles/
 	browseable = No
 	read only = No
 	csc policy = disable
 	vfs objects = dfs_samba4 acl_xattr
 
 [users]
-	path = /home/$Dominio/users/
+	path = /home/$dominio/users/
 	read only = no
 #	force create mode = 0600
 #	force directory mode = 0700

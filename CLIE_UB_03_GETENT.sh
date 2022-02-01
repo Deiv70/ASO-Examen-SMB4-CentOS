@@ -6,7 +6,7 @@ echo # [ David Gómez García ] #
 echo ##########################
 echo
 
-cd ~/samba || exit
+cd /mnt/_Shared || exit
 # source ./00_00_VAR.sh
 
 clear

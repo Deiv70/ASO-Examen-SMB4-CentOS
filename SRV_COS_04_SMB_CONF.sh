@@ -29,17 +29,17 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
     case "$SalidaMenu" in
 
-        1 ) dnf -y update && dnf -y upgrade;;
+        1 ) yum update -y && ym upgrade -y;;
 
         2 ) HISTFILE=~/.bash_history && set -o history && history > ./srv_cos_04-history_"$(date +%F_%H-%M-%S)".his && history -c && set +o history && HISTFILE="";;
 
         3 ) 
 
-samba-tool domain provision --server-role=dc --use-rfc2307 --host-name=$HostnameServ --domain=$Dominio --realm=$Dominio.$Extension --adminpass=abc123. --dns-backend=SAMBA_INTERNAL
+samba-tool domain provision --server-role=dc --use-rfc2307 --host-name=$HostnameServ --domain=$dominio --realm=$dominio.$extension --adminpass=abc123. --dns-backend=SAMBA_INTERNAL
 sleep 3
 
 #cp /var/lib/samba/private/krb5.conf /etc/
-rm /etc/krb5.conf
+\rm /etc/krb5.conf
 ln -s /usr/local/samba/private/krb5.conf /etc/
 
 
@@ -53,9 +53,9 @@ cat << EOF > /usr/local/samba/etc/smb.conf
 [global]
 	dns forwarder = $DnsNat
 	netbios name = $HostnameServ
-	realm = $Dominio.$Extension
+	realm = $dominio.$extension
 	server role = active directory domain controller
-	workgroup = $Dominio
+	workgroup = $dominio
 	log level = 3 passdb:5 auth:5
 
 #	rpc_server	: tcpip = no
@@ -74,10 +74,10 @@ cat << EOF > /usr/local/samba/etc/smb.conf
 #	idmap config * : backend = tdb
 #	idmap config * : range = 3000-7999
 
-#	idmap config $Dominio	: backend = ad
-#	idmap config $Dominio	: schema_mode = rfc2307
-#	idmap config $Dominio	: range = 10000-999999
-#	idmap config $Dominio	: unix_nss_info = yes
+#	idmap config $dominio	: backend = ad
+#	idmap config $dominio	: schema_mode = rfc2307
+#	idmap config $dominio	: range = 10000-999999
+#	idmap config $dominio	: unix_nss_info = yes
 
 	winbind nss info = rfc2307
 	winbind refresh tickets = yes
@@ -88,7 +88,7 @@ cat << EOF > /usr/local/samba/etc/smb.conf
 	winbind nested groups = yes
 
 	template shell = /bin/bash
-	template homedir = /home/$Dominio/users/%U
+	template homedir = /home/$dominio/users/%U
 
 	vfs objects = dfs_samba4 acl_xattr
 	map acl inherit = yes
@@ -100,19 +100,19 @@ cat << EOF > /usr/local/samba/etc/smb.conf
 	read only = No
 
 [netlogon]
-	path = /home/$Dominio/scripts
+	path = /home/$dominio/scripts
 	read only = No
 
 [profiles]
 	comment = Users profiles
-	path = /home/$Dominio/profiles/
+	path = /home/$dominio/profiles/
 	browseable = No
 	read only = No
 	csc policy = disable
 	vfs objects = dfs_samba4 acl_xattr
 
 [users]
-	path = /home/$Dominio/users/
+	path = /home/$dominio/users/
 	read only = no
 #	force create mode = 0600
 #	force directory mode = 0700
@@ -123,8 +123,8 @@ cat << EOF > /usr/local/samba/etc/smb.conf
 	read only = no
 	vfs objects = dfs_samba4 acl_xattr
 
-[VentasExtranjero]
-	path = /comun/VentasExtranjero
+[Ventas]
+	path = /comun/Ventas
 	read only = no
 	vfs objects = dfs_samba4 acl_xattr
 
