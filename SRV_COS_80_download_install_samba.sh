@@ -6,8 +6,9 @@ echo # [ David Gómez García ] #
 echo ##########################
 echo
 
-log=./_LogScriptSMB_02_01.sal
-. /mnt/_Shared/00_00_VAR.txt
+log=./srv_cos_80-di_salida.sal
+cd ~/samba || exit
+source ./00_00_VAR.sh
 
 Menu () {
    SalidaMenu=$(whiptail    --title "Script 02"                         \
@@ -351,11 +352,7 @@ cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /home/$dominio/.
 rm -rf /home/$dominio/Policies
 
 #net rpc group add "Unix Admins" -L -U Administrator
-<<<<<<< HEAD
-samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$dominio"
-=======
 samba-tool group add "Unix Admins" --gid-number $UnixAdmins_GID --nis-domain="$dominio"
->>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 #net rpc group addmem "Administrators" "Unix Admins" -U Administrator
 samba-tool group addmembers "Administrators" "Unix Admins"
 echo -e "abc123." | net rpc user setprimarygroup Administrator "Domain Admins" -U Administrator
