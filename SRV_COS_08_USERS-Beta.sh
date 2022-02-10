@@ -12,12 +12,12 @@ then
 	exit
 fi
 
-log=./srv_cos_004_salida.sal
+log=./srv_cos_08_salida.sal
 cd ~/samba || exit
 source ./00_00_VAR.sh
 
 Menu () {
-   SalidaMenu=$(whiptail    --title "Script 04"                         \
+   SalidaMenu=$(whiptail    --title "Script 08"                         \
                             --menu "Selecciona una Opción" 13 35 5      \
                                     1       "Actualizar"                \
                                     2       "Generar History"           \
@@ -25,124 +25,6 @@ Menu () {
                                     4       "Reiniciar"                 \
                                     0       "Salir" 3>&1 1>&2 2>&3)
     EstadoSalidaMenu=$?
-}
-
-_convert_to_array () {
-	for Var_Name in "$@"
-	do
-		a=0
-		Var="${!Var_Name}"
-		export Bak_$Var_Name="$Var"
-
-#		echo $A_Var=\"${!A_Var}\" >> Variables.txt
-
-		declare -a Var_Array=()
-		declare -g "A_$Var_Name=()"
-		if $( echo "$Var" | grep -q ',' )
-		then
-			while [ -n "$( echo $Var | awk -F',' '{print $2}' )" ]
-			do
-				Var_Value="$( echo $Var | awk -F',' '{print $1}' )"
-				Var="$( echo "$Var" | cut -d',' -f 2- )"
-				#Var_Array+=([$n]=$Var_Value)
-				declare -g A_"${Var_Name}"[$a]="$Var_Value"
-				((a++))
-			done
-			#Var_Array+=([$n]=$Var)
-			declare -g A_"${Var_Name}"[$a]="$Var"
-			((a++))
-		else
-			#Var_Array+=([$n]=$Var)
-			declare -g A_"${Var_Name}"[$a]="$Var"
-			((a++))
-		fi
-
-	#echo "${Var_Array[@]}"
-	#declare -g "A_$Var_Name[$n]=$( echo ${Var_Array[$n]} )"
-	done
-}
-
-_initialize_array () {
-	for i in "$@"; do
-		declare -g "$i=()"
-	done
-}
-
-_initialize_arrays () {
-	_initialize_array A_Counter A_UserUID A_User \
-		A_UserFullName A_UserFullName_64 A_UserFullName_Unaccent \
-		A_UserNameSurname A_UserNameSurname_64 \
-		A_UserNameSurname_Unaccent A_UserName A_UserName_64 \
-		A_UserName_Unaccent A_Initials A_UE_GrupoP A_UE_GruposS \
-		A_UE_Bak_GruposS
-}
-#_initialize_arrays () {
-#	declare -g A_Counter=()
-
-#	declare -g A_UserUID=()
-#	declare -g A_User=()
-#	declare -g A_UserFullName=()
-#	declare -g A_UserFullName_64=()
-#	declare -g A_UserFullName_Unaccent=()
-#	declare -g A_UserNameSurname=()
-#	declare -g A_UserNameSurname_64=()
-#	declare -g A_UserNameSurname_Unaccent=()
-#	declare -g A_UserName=()
-#	declare -g A_UserName_64=()
-#	declare -g A_UserName_Unaccent=()
-#	declare -g A_Initials=()
-#	declare -g A_UE_GrupoP=()
-#	declare -g A_UE_GruposS=()
-#	declare -g A_UE_Bak_GruposS=()
-#}
-
-_process_Add_Users_file () {
-	n=0
-
-	while read UserEntry
-	do
-		if [[ -z "$UserEntry" || "$( echo "$UserEntry" | cut -c 1 )" = "#" ]]
-		then
-			((n--))
-		else
-			## Comprobación:
-			A_Counter+=([$n]=$n)
-
-			## 1º Campo:
-			A_UserUID+=([$n]="$( echo "$UserEntry" | awk -F':' '{print $1}' )")
-			
-			## 2º Campo:
-			A_User+=([$n]="$( echo "$UserEntry" | awk -F':' '{print $2}' )")
-			
-			## 3º Campo:
-			A_UserFullName+=([$n]="$( echo "$UserEntry" | awk -F':' '{print $3}' )")
-			A_UserFullName_64+=([$n]="$( echo "${UserFullName[$n]}" | base64 )")
-			A_UserFullName_Unaccent+=([$n]="$( echo "${UserFullName[$n]}" | iconv -f utf8 -t ascii//TRANSLIT )")
-			
-			if $( echo "$UserFullName" | grep -q ' - '  )
-			then
-				A_UserNameSurname+=([$n]="$( echo "$UserFullName" | awk -F' - ' '{print $2}' )")
-			else
-				A_UserNameSurname+=([$n]="$UserFullName")
-			fi
-			A_UserNameSurname_64+=([$n]="$( echo "${UserNameSurname[$n]}" | base64 )")
-			A_UserNameSurname_Unaccent+=([$n]="$( echo "${UserNameSurname[$n]}" | iconv -f utf8 -t ascii//TRANSLIT )")
-			
-			A_UserName+=([$n]="$( echo "$UserNameSurname" | awk -F' ' '{print $1}'  )")
-			A_UserName_64+=([$n]="$( echo "${UserName[$n]}" | base64 )")
-			A_UserName_Unaccent+=([$n]="$( echo "${UserName[$n]}" | iconv -f utf8 -t ascii//TRANSLIT )")
-			
-			A_Initials+=([$n]="$( echo "${UserNameUnaccent[$n]}" | cut -c 1 )""$( echo "${UserSurnameUnaccent[$n]}" | cut -c 1 )")
-			
-			## 4º Campo:
-			A_UE_GrupoP+=([$n]="$( echo "$UserEntry" | awk -F':' '{print $4}' )")
-			## 5º Campo:
-			export UE_GruposS_$n="$( echo "$UserEntry" | awk -F':' '{print $5}' )"
-			export UE_Bak_GruposS_$n="$( echo "$UserEntry" | awk -F':' '{print $5}' )"
-		fi
-
-		((n++))
-	done < "$UserAddVariables"
 }
 
 EstadoSalidaMenu=0
@@ -155,13 +37,11 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
         1 ) yum update -y && ym upgrade -y;;
 
-        2 ) HISTFILE=~/.bash_history && set -o history && history >> history-004.his && history -c && set +o history && HISTFILE="";;
+        2 ) HISTFILE=~/.bash_history && set -o history && history > ./srv_cos_08-history_"$(date +%F_%H-%M-%S)".his && history -c && set +o history && HISTFILE="";;
 
         3 ) 
-			_convert_to_array GruposP GruposS GruposM
-			_initialize_arrays
-			_process_Add_Users_file
 
+<<<<<<< HEAD
 			samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$dominio"
 
 			#m=$n+1
@@ -262,12 +142,19 @@ EOF
 repquota -vugas | tee ./repquota.sal
 
 EOF
+=======
+        
+
+chmod +x ~/samba/SRV_COS_09_QUOTA.sh
+>>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 
 			Enter="Enter"
 			while [[ -n "$Enter" ]]; do
 				echo
 				read -sp "Pulsa Enter para Continuar..." Enter
-			done;;
+			done
+
+            HISTFILE=~/.bash_history && set -o history && history > ./srv_cos_07-history_"$(date +%F_%H-%M-%S)".his && history -c && set +o history && HISTFILE="";;
 
 		4 ) reboot; exit;;
 

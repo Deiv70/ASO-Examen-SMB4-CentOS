@@ -12,17 +12,21 @@ exec > >(tee "$log") 2>&1   #: To skip this, use next command:
 #source ./"$Functions"
 
 export NumUser=3
-export NumExa=5
+export NumExa=6
 export VarExa=EXA21220${NumExa}GOMGARDAV
 #export VarExa=EXA2021MARZO05GOMGARDAV
+<<<<<<< HEAD
 export Threads=7
+=======
+export Threads=6
+>>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 
 ## Dominio
 # export Dominio=${NumExa}PYME0$NumUser
 #export Dominio=${NumExa}APYME0$NumUser
 #export Extension=LOCAL
 # export dominio=${NumExa}pyme0$NumUser
-export dominio=${NumExa}apyme0$NumUser
+export dominio=${NumExa}dpyme0$NumUser
 export extension=local
 
 ## VBoxManage Variables:
@@ -50,7 +54,7 @@ export SharedFolder
 export HostnameServ=S1
 export HostnameClie=C1
 
-export UidTucuenta=2204
+export UidTucuenta=2105
 export UidAntonio=2100
 
 export PrefIpServInve=$NumUser.16.172
@@ -85,8 +89,9 @@ export DIR_COMUN=/comun
 
 ## SMB Specific:
 export UserAddVariables=00_00_ADD_USERS.txt
-export QuotaDefaultSize=70M
+export QuotaDefaultSize=80M
 export Users_GID=15000
+export UnixAdmins_GID=20000
 
 export OuUsuarios=usuarios
 export OuGrupos=grupos
@@ -94,6 +99,7 @@ export OuMaquinas=maquinas
 
 export GruposP=empleado,encargado,director
 export GruposS=ventas,desarrollo,g_ventas,g_vental,g_ventae,g_vasia,g_veuropa,g_voceania
+export CarpetasVentas=Ventas_Extranjero,Ventas_Local,Vasia,Veuropa,Voceania
 export GruposM=aula01,aula02
 
 alias samba-tool='/usr/local/samba/bin/samba-tool'

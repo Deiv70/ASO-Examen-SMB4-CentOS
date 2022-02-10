@@ -6,11 +6,9 @@ echo # [ David Gómez García ] #
 echo ##########################
 echo
 
+log=./srv_cos_99_salida.sal
 cd ~/samba || exit
-export VariablesSh=00_00_VAR.sh
-. ./"$VariablesSh"
-
-rm -rf ./samba*
+source ./00_00_VAR.sh
 
 cp -r . /mnt/_Shared/_Entrega
 
@@ -18,6 +16,6 @@ Enter="Enter"
 while [[ -n "$Enter" ]]; do
 	echo
 	read -sp "Pulsa Enter para Continuar..." Enter
-done;;
+done
 
-cp -r . /mnt/lucus/dir$VarEXA
+cp -r . /mnt/lucus/dir$VarExa

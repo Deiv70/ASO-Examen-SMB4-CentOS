@@ -113,7 +113,8 @@ aliases:    files nisplus
 EOF
 
 test -f /etc/pam.d/password-auth.org && cp /etc/pam.d/password-auth /etc/pam.d/password-auth.bak || cp /etc/pam.d/password-auth /etc/pam.d/password-auth.org
-authselect select winbind with-mkhomedir --force
+#authselect select winbind with-mkhomedir --force
+authconfig --enablemkhomedir --update
 systemctl enable oddjobd --now
 # cat << EOF > /etc/pam.d/password-auth
 # #%PAM-1.0

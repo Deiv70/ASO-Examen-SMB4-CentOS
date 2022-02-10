@@ -45,6 +45,7 @@ ln -s /usr/local/samba/private/krb5.conf /etc/
 
 systemctl start samba-ad-dc
 systemctl status samba-ad-dc
+systemctl stop samba-ad-dc
 
 cp /usr/local/samba/etc/smb.conf /usr/local/samba/etc/smb.conf.generated
 
@@ -86,6 +87,8 @@ cat << EOF > /usr/local/samba/etc/smb.conf
 	winbind enum users = yes
 	winbind enum groups = yes
 	winbind nested groups = yes
+
+#	username map = /usr/local/samba/etc/username.map
 
 	template shell = /bin/bash
 	template homedir = /home/$dominio/users/%U
@@ -130,12 +133,34 @@ cat << EOF > /usr/local/samba/etc/smb.conf
 
 EOF
 
+groupadd -r -g $UnixAdmins_GID unix-admins
+
+systemctl start samba-ad-dc.service && sleep 3
+
+#net rpc group add "Unix Admins" -L -U Administrator
+samba-tool group add "Unix Admins" --gid-number $UnixAdmins_GID --nis-domain="$dominio"
+#net rpc group addmem "Administrators" "Unix Admins" -U Administrator
+samba-tool group addmembers "Administrators" "Unix Admins"
+echo -e "abc123." | net rpc user setprimarygroup Administrator "Domain Admins" -U Administrator
+echo -e "abc123." | net rpc rights grant "$dominio\\Unix Admins" SeDiskOperatorPrivilege -U "$dominio\\Administrator"
+#net rpc rights list privileges SeDiskOperatorPrivilege -U "Administrator"
+samba-tool group addmembers "Unix Admins" Administrator
+
+cat << EOF > /usr/local/samba/etc/username.map
+unix-admins="Unix Admins"
+
+EOF
+
+systemctl restart samba-ad-dc
+sleep 3
+
+authconfig-tui
+
 systemctl restart samba-ad-dc
 sleep 3
 
 getent passwd
 getent group
-sleep 3
 
 
       Enter="Enter"

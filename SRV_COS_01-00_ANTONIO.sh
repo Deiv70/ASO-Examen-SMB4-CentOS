@@ -10,7 +10,7 @@ log=./srv_cos_01-00_salida.sal
 cd ~/samba || exit
 source ./00_00_VAR.sh
 
-dnf -y install whois expect
+yum install -y whois expect
 
 #echo -e "abc123." > /tmp/openssl-passwd.txt
 #openssl passwd -1 -noverify -in /tmp/openssl-passwd.txt > /tmp/passwd.txt

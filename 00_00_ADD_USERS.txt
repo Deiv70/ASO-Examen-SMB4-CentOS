@@ -1,5 +1,6 @@
 #-> UID:user:[Dept - ]Nombre Completo:G-Primario:G-Secundaio,G-Secundario2,...
  :
+<<<<<<< HEAD
 10000:noa04:Encargada - Noa:encargado:g_ventas,g_vental,g_voceania
 11000:fermin04:Encargado - Fermín:encargado:g_ventas,g_vental,g_ventae,g_vasia,g_veuropa,g_voceania
 12000:felipe04:Encargado - Felipe:encargado:g_ventae
@@ -13,3 +14,17 @@
 16000:geluco04:Empleado - Gelúco:empleado:g_vasia
 17000:honorato04:Empleado - Honorato:empleado:g_veuropa
 18000:isabel04:Empleada - Isabél:empleado:g_voceania
+=======
+10000:noa05:Encargada - Noa:encargado:g_ventas,g_vental,g_voceania
+11000:fermin05:Encargado - Fermín:encargado:g_ventas,g_vental,g_ventae,g_vasia,g_veuropa,g_voceania
+12000:felipe05:Encargado - Felipe:encargado:g_ventae
+13000:manuel05:Encargado - Manuel:encargado:g_vasia
+14001:ana05:Empleada - Ana:empleado:g_vental
+14002:beatriz05:Empleada - Beatriz:empleado:g_ventae
+14003:cesario05:Empleado - Cesario:empleado:desarrollo
+14004:diego05:Empleado - Diego:empleado:desarrollo
+14005:estebaniz05:Empleado - Estebaniz:empleado:desarrollo
+16000:geluco05:Empleado - Gelúco:empleado:g_vasia
+17000:honorato05:Empleado - Honorato:empleado:g_veuropa
+18000:isabel05:Empleada - Isabél:empleado:g_voceania
+>>>>>>> 2c2a4d8 (fix: various scripts errors fixed)

@@ -35,6 +35,7 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 
         3 ) 
 
+<<<<<<< HEAD
 #mkdir -p /comun/VentasExtranjero #&& mkdir /home/$dominio
 
 #cp -ra /usr/local/samba/var/locks/sysvol/$dominio.$extension/. /comun
@@ -52,6 +53,10 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 #rm -rf /home/$dominio/Policies
 mkdir /{comun,home/$dominio}
 
+=======
+mkdir /{comun,home/$dominio}
+
+>>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 echo "/dev/sdb1					/home/$dominio		ext4		defaults,acl,user_xattr,errors=remount-ro,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0                 0 0" >> /etc/fstab
 echo "/dev/sdb2					/comun			ext4		defaults,acl,user_xattr,errors=remount-ro,usrjquota=aquota.user,grpjquota=aquota.group,jqfmt=vfsv0                 0 0" >> /etc/fstab
 #echo "/dev/sdb1					/home/$dominio		ext4		defaults,acl,user_xattr,uid=0,gid=100,umask=007                 0 0" >> /etc/fstab
@@ -65,12 +70,24 @@ mount -a
 quotacheck -vaugfcm
 quotaon -vaug
 
+<<<<<<< HEAD
 mkdir -p /comun/Ventas/{Ventas_Extranjero,Ventas_Local,Vasia,Veuropa,Voceania}
 mkdir -p /home/$dominio/{users,profiles,scripts}
 #mkdir /home/$dominio/scripts
 
 setfacl -m g:"$dominio\Domain Admins":rwx /home/$dominio/profiles/
 setfacl -dm g:"$dominio\Domain Admins":rwx /home/$dominio/profiles/
+=======
+mkdir -p /comun/Ventas/{$CarpetasVentas}
+mkdir -p /home/$dominio/{users,profiles,scripts}
+#mkdir /home/$dominio/scripts
+
+chown -R root:unix-admins /home/$dominio
+setfacl -dm g:"$dominio\Unix Admins":rwx /home/$dominio
+
+setfacl -m g:"$dominio\Unix Admins":rwx /home/$dominio/profiles/
+setfacl -dm g:"$dominio\Unix Admins":rwx /home/$dominio/profiles/
+>>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 setfacl -m g:"$dominio\Domain Users":rwx /home/$dominio/profiles/
 
 firewall-cmd --permanent --add-service=nfs
@@ -84,6 +101,8 @@ systemctl enable nfs-server.service
 service nfs-server restart
 exportfs -v
 
+getent group
+
 #useradd general -M -N -u 1001
 #passwd -l general
 #setquota -u general $QuotaDefaultSize $QuotaDefaultSize  0 0 /home/$dominio
@@ -94,6 +113,7 @@ exportfs -v
 #cp -ra /home/$dominio/scripts /home/$dominio/users
 #cp -ra /home/$dominio/scripts /home/$dominio/profiles
 
+<<<<<<< HEAD
 #net rpc group add "Unix Admins" -L -U Administrator
 samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$dominio"
 #net rpc group addmem "Administrators" "Unix Admins" -U Administrator
@@ -112,6 +132,17 @@ systemctl restart samba-ad-dc.service && sleep 3 && getent group && sleep 3
 # chmod g-w -R /home/$dominio/users
 #chown -R root:users /home/$dominio/{profiles,users}
 
+=======
+# chown "$dominio\\Administrator":"$dominio\\Unix Admins" /home/$dominio
+# mkdir -p /home/$dominio/{profiles,users,VentasExtranjero}
+# chown -R "$dominio\\Administrator":"$dominio\\Domain Admins" /home/$dominio/profiles
+# chown -R "$dominio\\Administrator":"$dominio\\Unix Admins" /home/$dominio/users
+# chmod o+rx /home/$dominio /home/$dominio/users
+# #chmod g-w /home/$dominio
+# chmod g-w -R /home/$dominio/users
+#chown -R root:users /home/$dominio/{profiles,users}
+
+>>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 # mkdir -p /home/$dominio/users/Administrator
 # chown "$dominio\\Administrator":"BUILTIN\\Administrators" /home/$dominio/users/Administrator
 # mkdir -p /home/$dominio/VentasExtranjero

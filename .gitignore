@@ -3,9 +3,15 @@ _Capturas
 *.rpm
 *.sal
 *.his
+getent*
 *.png
 *.vsdx
 *.odt
 *.pdf
+*.tar
+*.gz
 samba*
 SRV_COS_*_QUOTA.*
+*-Beta.sh
+~*
+*~

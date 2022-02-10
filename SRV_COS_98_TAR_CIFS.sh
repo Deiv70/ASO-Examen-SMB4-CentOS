@@ -6,12 +6,14 @@ echo # [ David Gómez García ] #
 echo ##########################
 echo
 
+log=./srv_cos_98_salida.sal
 cd ~/samba || exit
-export VariablesSh=00_00_VAR.sh
-. ./"$VariablesSh"
+source ./00_00_VAR.sh
+
+rm -rf ./samba*
 
 find . \( -name '*.csv' -or -name '*.txt' -or -name '*.cmd' -or -name '*.conf' -or -name '*.sh' -or -name '*.sal' -or -name '*.his' -or -name '*.ldif' \) -print0 | \
-    xargs -0 tar -vzcf $VarEXA.tar.gz
+    xargs -0 tar -vzcf $VarExa.tar.gz
 
 mkdir /mnt/lucus
 
