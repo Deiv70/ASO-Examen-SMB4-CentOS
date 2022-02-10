@@ -15,11 +15,7 @@ export NumUser=3
 export NumExa=6
 export VarExa=EXA21220${NumExa}GOMGARDAV
 #export VarExa=EXA2021MARZO05GOMGARDAV
-<<<<<<< HEAD
-export Threads=7
-=======
 export Threads=6
->>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 
 ## Dominio
 # export Dominio=${NumExa}PYME0$NumUser

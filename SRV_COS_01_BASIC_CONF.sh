@@ -36,17 +36,6 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
         3 ) 
             \rm -f "$log"
 
-<<<<<<< HEAD
-cat << EOF > /etc/hosts
-127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-$IpServ   $HostnameServ.$dominio.$extension $dominio.$extension $HostnameServ
-
-EOF
-
-hostnamectl set-hostname $HostnameServ.$dominio.$extension
-
-=======
             groupmod -g $Users_GID users
 
             cat << EOF > /etc/default/useradd
@@ -70,7 +59,6 @@ EOF
 
 hostnamectl set-hostname $HostnameServ.$dominio.$extension
 
->>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 ifdown eth0
 cat << EOF > /etc/sysconfig/network-scripts/ifcfg-eth0
 TYPE=Ethernet

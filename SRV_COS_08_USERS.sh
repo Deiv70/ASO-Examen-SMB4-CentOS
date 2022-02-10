@@ -162,11 +162,7 @@ while [ "$EstadoSalidaMenu" = 0 ]; do
 			_initialize_arrays
 			_process_Add_Users_file
 
-<<<<<<< HEAD
-			samba-tool group add "Unix Admins" --gid-number 20000 --nis-domain="$dominio"
-=======
 			samba-tool group add "Unix Admins" --gid-number $UnixAdmins_GID --nis-domain="$dominio"
->>>>>>> 2c2a4d8 (fix: various scripts errors fixed)
 
 			#m=$n+1
 			cat << EOF > ~/samba/SRV_COS_09_QUOTA.sh
